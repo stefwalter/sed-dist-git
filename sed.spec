@@ -5,7 +5,7 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.0.8
-Release: 3
+Release: 4
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
@@ -64,6 +64,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Fri Feb 13 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
 * Wed Jan  7 2004 Jakub Jelinek <jakub@redhat.com> 4.0.8-3
 - if not -n, print current buffer after N command on the last line
   unless POSIXLY_CORRECT (#112952)
