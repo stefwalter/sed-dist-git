@@ -4,7 +4,7 @@
 
 Summary: A GNU stream text editor.
 Name: sed
-Version: 4.1
+Version: 4.1.1
 Release: 1
 Copyright: GPL
 Group: Applications/Text
@@ -60,6 +60,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Thu Jul  8 2004 Jakub Jelinek <jakub@redhat.com> 4.1.1-1
+- update to 4.1.1
+
 * Mon Jun 21 2004 Jakub Jelinek <jakub@redhat.com> 4.1-1
 - update to 4.1
 
