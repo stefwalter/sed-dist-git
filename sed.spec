@@ -41,6 +41,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %makeinstall
 rm -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
+mv -f ${RPM_BUILD_ROOT}/%{_datadir}/doc/sed.html .
 
 %find_lang %{name}
 
@@ -57,7 +58,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc BUGS NEWS THANKS README AUTHORS sedfaq.txt.gz
+%doc BUGS NEWS THANKS README AUTHORS sedfaq.txt.gz sed.html
 %{_bindir}/sed
 %{_infodir}/*.info*
 %{_mandir}/man*/*
