@@ -1,11 +1,12 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 3.02
-Release: 10
+Release: 11
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://prep.ai.mit.edu/pub/gnu/sed-%{version}.tar.gz
 Patch0: http://member.nifty.ne.jp/wills/program/sedmb109.diff.gz
+Patch1: sed-3.02-doc.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -19,6 +20,7 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
+%patch1 -p1
 
 %build
 
@@ -65,6 +67,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Fri Apr  5 2002 Jakub Jelinek <jakub@redhat.com>
+- Remove stale URLs from documentation (#62519)
+
 * Sun Jun 24 2001 Elliot Lee <sopwith@redhat.com>
 - Bump release + rebuild.
 
