@@ -5,10 +5,11 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.0.8
-Release: 1
+Release: 2
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
+Patch0: sed-%{version}-fastmap.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -22,10 +23,10 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
+%patch -p1
 
 %build
-%configure
-# XXX testsuite not passing: --without-included-regex
+%configure --without-included-regex
 make %{_smp_mflags}
 
 echo ====================TESTING=========================
@@ -59,6 +60,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Fri Nov 14 2003 Jakub Jelinek <jakub@redhat.com> 4.0.8-2
+- enable --without-included-regex again
+- use fastmap for regex searching
+
 * Sat Oct 25 2003 Florian La Roche <Florian.LaRoche@redhat.de>
 - update to 4.0.8
 - simplify specfile
