@@ -5,8 +5,8 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.1.2
-Release: 4
-Copyright: GPL
+Release: 5
+License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
@@ -65,6 +65,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Sat Mar  5 2005 Jakub Jelinek <jakub@redhat.com> 4.1.2-5
+- rebuilt with GCC 4
+
 * Fri Oct  8 2004 Jakub Jelinek <jakub@redhat.com> 4.1.2-4
 - fix up make check to run sed --version with LC_ALL=C
   in the environment (#129014)
