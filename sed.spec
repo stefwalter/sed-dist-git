@@ -10,12 +10,12 @@ Copyright: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
+Patch0: sed-4.1.2-tests.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
-# Disabled, beehive doesn't think it has glibc on x86:
-# Make sure glibc regex has all fixes we need
-#BuildRequires: glibc >= 2.3.3-27, glibc-devel >= 2.3.3-27
+BuildRequires: glibc >= 2.3.3-28, glibc-devel >= 2.3.3-28
+Requires: glibc >= 2.3.3-28
 
 %description
 The sed (Stream EDitor) editor is a stream or batch (non-interactive)
@@ -26,6 +26,7 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure --without-included-regex
@@ -64,6 +65,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Fri Oct  8 2004 Jakub Jelinek <jakub@redhat.com> 4.1.2-4
+- fix up make check to run sed --version with LC_ALL=C
+  in the environment (#129014)
+
 * Sat Oct  2 2004 Jakub Jelinek <jakub@redhat.com> 4.1.2-3
 - add sedfaq.txt to %{_docdir} (#16202)
 
