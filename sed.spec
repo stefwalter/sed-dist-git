@@ -1,12 +1,10 @@
 Summary: A GNU stream text editor.
 Name: sed
-Version: 3.02
-Release: 13
+Version: 4.0.5
+Release: 1
 Copyright: GPL
 Group: Applications/Text
-Source0: ftp://prep.ai.mit.edu/pub/gnu/sed-%{version}.tar.gz
-Patch0: http://member.nifty.ne.jp/wills/program/sedmb109.diff.gz
-Patch1: sed-3.02-doc.patch
+Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -20,29 +18,35 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
-%patch1 -p1
 
 %build
 
 %configure
-make
+make %{_smp_mflags}
+
+echo ====================TESTING=========================
+make check
+echo ====================TESTING END=====================
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
 
 %makeinstall
 
-{ cd ${RPM_BUILD_ROOT}
+pushd ${RPM_BUILD_ROOT}
 
 %ifos linux
-  mkdir -p ./bin
-  mv .%{_bindir}/sed ./bin/sed
-  rmdir .%{_bindir}
+mkdir -p ./bin
+mv .%{_bindir}/sed ./bin/sed
+rmdir .%{_bindir}
 %endif
 
-  gzip -9nf .%{_infodir}/sed.info*
-  rm -f .%{_infodir}/dir
-}
+gzip -9nf .%{_infodir}/sed.info*
+rm -f .%{_infodir}/dir
+
+popd
+
+%find_lang %{name}
 
 %post
 /sbin/install-info %{_infodir}/sed.info.gz %{_infodir}/dir
@@ -55,9 +59,9 @@ fi
 %clean
 rm -rf ${RPM_BUILD_ROOT}
 
-%files
+%files -f %{name}.lang
 %defattr(-,root,root)
-%doc ANNOUNCE BUGS NEWS README TODO
+%doc BUGS NEWS THANKS README AUTHORS TODO
 %ifos linux
 /bin/sed 
 %else
@@ -67,6 +71,13 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Thu Jan 23 2003 Jakub Jelinek <jakub@redhat.com> 4.0.5-1
+- update to 4.0.5
+
+* Tue Oct 22 2002 Jakub Jelinek <jakub@redhat.com>
+- rebuilt to fix x86-64 miscompilation
+- run make check in %%build
+
 * Fri Jun 21 2002 Tim Powers <timp@redhat.com>
 - automated rebuild
 
