@@ -5,10 +5,11 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.1.2
-Release: 1
+Release: 2
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
+Source1: http://sed.sourceforge.net/sedfaq.txt
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -29,6 +30,7 @@ specified in a script file or from the command line.
 %build
 %configure --without-included-regex
 make %{_smp_mflags}
+install -m 644 %{SOURCE1} sedfaq.txt
 
 echo ====================TESTING=========================
 make check
@@ -61,6 +63,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Sat Oct  2 2004 Jakub Jelinek <jakub@redhat.com> 4.1.2-2
+- add sedfaq.txt to %{_docdir} (#16202)
+
 * Mon Aug 23 2004 Florian La Roche <Florian.LaRoche@redhat.de>
 - update to 4.1.2
 
