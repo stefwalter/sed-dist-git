@@ -1,6 +1,10 @@
+%ifos linux
+%define _bindir /bin
+%endif
+
 Summary: A GNU stream text editor.
 Name: sed
-Version: 4.0.5
+Version: 4.0.8
 Release: 1
 Copyright: GPL
 Group: Applications/Text
@@ -20,8 +24,8 @@ specified in a script file or from the command line.
 %setup -q
 
 %build
-
 %configure
+# XXX testsuite not passing: --without-included-regex
 make %{_smp_mflags}
 
 echo ====================TESTING=========================
@@ -32,19 +36,7 @@ echo ====================TESTING END=====================
 rm -rf ${RPM_BUILD_ROOT}
 
 %makeinstall
-
-pushd ${RPM_BUILD_ROOT}
-
-%ifos linux
-mkdir -p ./bin
-mv .%{_bindir}/sed ./bin/sed
-rmdir .%{_bindir}
-%endif
-
-gzip -9nf .%{_infodir}/sed.info*
-rm -f .%{_infodir}/dir
-
-popd
+rm -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
 
 %find_lang %{name}
 
@@ -61,16 +53,28 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc BUGS NEWS THANKS README AUTHORS TODO
-%ifos linux
-/bin/sed 
-%else
+%doc BUGS NEWS THANKS README AUTHORS
 %{_bindir}/sed
-%endif
 %{_infodir}/*.info*
 %{_mandir}/man*/*
 
 %changelog
+* Sat Oct 25 2003 Florian La Roche <Florian.LaRoche@redhat.de>
+- update to 4.0.8
+- simplify specfile
+- disable --without-included-regex to pass the testsuite
+
+* Thu Jun 26 2003 Jakub Jelinek <jakub@redhat.com> 4.0.7-3
+- rebuilt
+
+* Wed Jun 04 2003 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Sat Apr 12 2003 Florian La Roche <Florian.LaRoche@redhat.de>
+- update to 4.0.7
+- use "--without-included-regex"
+- do not gzip info pages in spec file, "TODO" is not present anymore
+
 * Thu Jan 23 2003 Jakub Jelinek <jakub@redhat.com> 4.0.5-1
 - update to 4.0.5
 
