@@ -4,17 +4,16 @@
 
 Summary: A GNU stream text editor.
 Name: sed
-Version: 4.0.8
-Release: 4
+Version: 4.0.9
+Release: 1
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
-Patch0: sed-%{version}-fastmap.patch
-Patch1: sed-4.0.9-N-if-not-posixly-correct.patch
-Patch2: sed-4.0.8-xfails.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
+# Make sure glibc regex has all fixes we need
+BuildRequires: glibc >= 2.3.3-27, glibc-devel >= 2.3.3-27
 
 %description
 The sed (Stream EDitor) editor is a stream or batch (non-interactive)
@@ -25,9 +24,6 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 %configure --without-included-regex
@@ -64,6 +60,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Tue May 25 2004 Jakub Jelinek <jakub@redhat.com> 4.0.9-1
+- update to 4.0.9
+- BuildRequire recent glibc and glibc-devel (#123043)
+
 * Fri Feb 13 2004 Elliot Lee <sopwith@redhat.com>
 - rebuilt
 
