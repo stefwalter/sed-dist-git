@@ -1,7 +1,7 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 3.02
-Release: 9
+Release: 10
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://prep.ai.mit.edu/pub/gnu/sed-%{version}.tar.gz
@@ -65,6 +65,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Sun Jun 24 2001 Elliot Lee <sopwith@redhat.com>
+- Bump release + rebuild.
+
 * Mon Dec 18 2000 Yukihiro Nakai <ynakai@redhat.com>
 - Update to 2000.11.28 patch
 - Rebuild for 7.1 tree
