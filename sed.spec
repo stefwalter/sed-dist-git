@@ -5,11 +5,13 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.0.8
-Release: 2
+Release: 3
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Patch0: sed-%{version}-fastmap.patch
+Patch1: sed-4.0.9-N-if-not-posixly-correct.patch
+Patch2: sed-4.0.8-xfails.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -23,7 +25,9 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %configure --without-included-regex
@@ -60,6 +64,12 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Wed Jan  7 2004 Jakub Jelinek <jakub@redhat.com> 4.0.8-3
+- if not -n, print current buffer after N command on the last line
+  unless POSIXLY_CORRECT (#112952)
+- adjust XFAIL_TESTS for the improved glibc regex implementation
+  (#112642)
+
 * Fri Nov 14 2003 Jakub Jelinek <jakub@redhat.com> 4.0.8-2
 - enable --without-included-regex again
 - use fastmap for regex searching
