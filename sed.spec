@@ -1,11 +1,11 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 3.02
-Release: 8j1
+Release: 9
 Copyright: GPL
 Group: Applications/Text
 Source0: ftp://prep.ai.mit.edu/pub/gnu/sed-%{version}.tar.gz
-Patch0: http://member.nifty.ne.jp/wills/program/sedmb108.diff.gz
+Patch0: http://member.nifty.ne.jp/wills/program/sedmb109.diff.gz
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -65,9 +65,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
-* Wed Aug 02 2000 Yukihiro Nakai <ynakai@redhat.com>
-- Update to 2000.06.18 patch
-- Rebuild for 7.0J beta
+* Mon Dec 18 2000 Yukihiro Nakai <ynakai@redhat.com>
+- Update to 2000.11.28 patch
+- Rebuild for 7.1 tree
 
 * Wed Jul 12 2000 Prospector <bugzilla@redhat.com>
 - automatic rebuild
