@@ -4,7 +4,7 @@
 
 Summary: A GNU stream text editor.
 Name: sed
-Version: 4.1.1
+Version: 4.1.2
 Release: 1
 Copyright: GPL
 Group: Applications/Text
@@ -12,8 +12,9 @@ Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
+# Disabled, beehive doesn't think it has glibc on x86:
 # Make sure glibc regex has all fixes we need
-BuildRequires: glibc >= 2.3.3-27, glibc-devel >= 2.3.3-27
+#BuildRequires: glibc >= 2.3.3-27, glibc-devel >= 2.3.3-27
 
 %description
 The sed (Stream EDitor) editor is a stream or batch (non-interactive)
@@ -60,6 +61,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Mon Aug 23 2004 Florian La Roche <Florian.LaRoche@redhat.de>
+- update to 4.1.2
+
 * Thu Jul  8 2004 Jakub Jelinek <jakub@redhat.com> 4.1.1-1
 - update to 4.1.1
 
