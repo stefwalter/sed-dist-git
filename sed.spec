@@ -10,7 +10,6 @@ License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
-Patch0: sed-4.1.2-tests.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -26,7 +25,6 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %configure --without-included-regex
