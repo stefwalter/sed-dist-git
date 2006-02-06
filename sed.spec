@@ -4,8 +4,8 @@
 
 Summary: A GNU stream text editor.
 Name: sed
-Version: 4.1.4
-Release: 1.1
+Version: 4.1.5
+Release: 1
 License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
@@ -64,6 +64,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Mon Feb 06 2006 Florian La Roche <laroche@redhat.com>
+- 4.1.5
+
 * Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
 - rebuilt
 
