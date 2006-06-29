@@ -5,11 +5,12 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.1.5
-Release: 1.2
+Release: 2
 License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
+Patch0: sed-4.1.4-bz185374.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -25,6 +26,7 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure --without-included-regex
@@ -63,6 +65,11 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Thu Jun 29 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-2
+- #185374:
+  - Follow symlinks before rename (avoid symlink overwrite)
+  - Add -c flag for copy instead of rename (avoid ownership change)
+
 * Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 4.1.5-1.2
 - bump again for double-long bug on ppc(64)
 
