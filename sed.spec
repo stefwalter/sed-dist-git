@@ -5,12 +5,12 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.1.5
-Release: 2.1
+Release: 2.2
 License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
-Patch0: sed-4.1.4-bz185374.patch
+Patch0: sed-4.1.5-bz185374.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -65,6 +65,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Thu Jun 29 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-2.2
+- typo in patch name
+
 * Thu Jun 29 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-2.1
 - rebuild
 
