@@ -10,8 +10,8 @@ License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
-Patch0: sed-4.1.5-bz185374.patch
-Patch1: sed-4.1.5-str_append.patch
+Patch0: sed-4.1.5-utf8performance.patch
+Patch1: sed-4.1.5-bz185374.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -67,8 +67,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
-* Wed Aug  2 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-4
-- remove superfluous multibyte processing in str_append (#177246)
+* Wed Aug  3 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-4
+- remove superfluous multibyte processing in str_append for UTF-8
+  encoding (thanks Paolo Bonzini, #177246)
 
 * Mon Jul 17 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-3
 - use dist tag
