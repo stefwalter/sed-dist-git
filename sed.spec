@@ -5,13 +5,14 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.1.5
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.1.5-utf8performance.patch
 Patch1: sed-4.1.5-bz185374.patch
+Patch2: sed-4.1.5-relsymlink.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -29,6 +30,7 @@ specified in a script file or from the command line.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %configure --without-included-regex
@@ -67,6 +69,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Mon Sep  4 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-5
+- Fix handling of relative symlinks (#205122)
+
 * Wed Aug  3 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-4
 - remove superfluous multibyte processing in str_append for UTF-8
   encoding (thanks Paolo Bonzini, #177246)
