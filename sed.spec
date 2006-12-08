@@ -5,14 +5,14 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.1.5
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.1.5-utf8performance.patch
-Patch1: sed-4.1.5-bz185374.patch
-Patch2: sed-4.1.5-relsymlink.patch
+Patch1: sed-4.1.5-follow.patch
+Patch2: sed-4.1.5-copy.patch
 Prereq: /sbin/install-info
 Prefix: %{_prefix}
 Buildroot: %{_tmppath}/%{name}-root
@@ -38,6 +38,7 @@ make %{_smp_mflags}
 install -m 644 %{SOURCE1} sedfaq.txt
 gzip -9 sedfaq.txt
 
+%check
 echo ====================TESTING=========================
 make check
 echo ====================TESTING END=====================
@@ -69,6 +70,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Fri Dec  8 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-6
+- Split confused patches "copy+symlink" and "relsymlink" into discrete
+  "copy" and "symlink".
+
 * Mon Sep  4 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-5
 - Fix handling of relative symlinks (#205122)
 
