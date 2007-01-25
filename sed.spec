@@ -5,7 +5,7 @@
 Summary: A GNU stream text editor.
 Name: sed
 Version: 4.1.5
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPL
 Group: Applications/Text
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
@@ -52,11 +52,11 @@ rm -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
 %find_lang %{name}
 
 %post
-/sbin/install-info %{_infodir}/sed.info.gz %{_infodir}/dir
+/sbin/install-info %{_infodir}/sed.info.gz %{_infodir}/dir || :
 
 %preun
 if [ $1 = 0 ]; then
-   /sbin/install-info --delete %{_infodir}/sed.info.gz %{_infodir}/dir
+   /sbin/install-info --delete %{_infodir}/sed.info.gz %{_infodir}/dir || :
 fi
 
 %clean
@@ -70,6 +70,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Thu Jan 25 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-7
+- Ville Skytta: patch for non-failing %%post, %%preun
+- Resolves: #223716
+
 * Fri Dec  8 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-6
 - Split confused patches "copy+symlink" and "relsymlink" into discrete
   "copy" and "symlink".
