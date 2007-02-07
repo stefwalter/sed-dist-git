@@ -1,23 +1,25 @@
+# -*- coding: utf-8 -*-
 %ifos linux
 %define _bindir /bin
 %endif
 
-Summary: A GNU stream text editor.
+Summary: A GNU stream text editor
 Name: sed
 Version: 4.1.5
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPL
 Group: Applications/Text
+URL: http://www.gnu.org/software/sed/
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.1.5-utf8performance.patch
 Patch1: sed-4.1.5-follow.patch
 Patch2: sed-4.1.5-copy.patch
-Prereq: /sbin/install-info
-Prefix: %{_prefix}
-Buildroot: %{_tmppath}/%{name}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: glibc >= 2.3.3-28, glibc-devel >= 2.3.3-28
 Requires: glibc >= 2.3.3-28
+Requires(post): /sbin/install-info
+Requires(preun): /sbin/install-info
 
 %description
 The sed (Stream EDitor) editor is a stream or batch (non-interactive)
@@ -70,8 +72,12 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Wed Feb  7 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-8
+- tidy up the specfile per rpmlint comments
+- use utf-8 and fix national characters in contributor's names
+
 * Thu Jan 25 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-7
-- Ville Skytta: patch for non-failing %%post, %%preun
+- Ville Skyttä: patch for non-failing %%post, %%preun
 - Resolves: #223716
 
 * Fri Dec  8 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-6
@@ -125,7 +131,7 @@ rm -rf ${RPM_BUILD_ROOT}
   in the environment (#129014)
 
 * Sat Oct  2 2004 Jakub Jelinek <jakub@redhat.com> 4.1.2-3
-- add sedfaq.txt to %{_docdir} (#16202)
+- add sedfaq.txt to %%{_docdir} (#16202)
 
 * Mon Aug 23 2004 Florian La Roche <Florian.LaRoche@redhat.de>
 - update to 4.1.2
