@@ -6,8 +6,8 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.1.5
-Release: 8%{?dist}
-License: GPL
+Release: 9%{?dist}
+License: GPLv2+
 Group: Applications/Text
 URL: http://www.gnu.org/software/sed/
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
@@ -72,6 +72,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Thu Aug 16 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-9
+- Fix licensing tag.
+
 * Wed Feb  7 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-8
 - tidy up the specfile per rpmlint comments
 - use utf-8 and fix national characters in contributor's names
