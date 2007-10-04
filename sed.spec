@@ -9,15 +9,14 @@ Version: 4.1.5
 Release: 9%{?dist}
 License: GPLv2+
 Group: Applications/Text
-URL: http://www.gnu.org/software/sed/
+URL: http://sed.sourceforge.net/
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
 Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.1.5-utf8performance.patch
 Patch1: sed-4.1.5-follow.patch
 Patch2: sed-4.1.5-copy.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: glibc >= 2.3.3-28, glibc-devel >= 2.3.3-28
-Requires: glibc >= 2.3.3-28
+BuildRequires: glibc-devel gawk
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
@@ -37,7 +36,7 @@ specified in a script file or from the command line.
 %build
 %configure --without-included-regex
 make %{_smp_mflags}
-install -m 644 %{SOURCE1} sedfaq.txt
+install -m 644 -p %{SOURCE1} sedfaq.txt
 gzip -9 sedfaq.txt
 
 %check
@@ -47,8 +46,7 @@ echo ====================TESTING END=====================
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
-
-%makeinstall
+make DESTDIR=$RPM_BUILD_ROOT install
 rm -f ${RPM_BUILD_ROOT}/%{_infodir}/dir
 
 %find_lang %{name}
@@ -66,14 +64,16 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc BUGS NEWS THANKS README AUTHORS sedfaq.txt.gz
+%doc BUGS NEWS THANKS README AUTHORS sedfaq.txt.gz COPYING COPYING.DOC
 %{_bindir}/sed
 %{_infodir}/*.info*
 %{_mandir}/man*/*
 
 %changelog
-* Thu Aug 16 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-9
+* Thu Oct  4 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-9
 - Fix licensing tag.
+- Clean up per merge review comments.
+- Resolves: #226404
 
 * Wed Feb  7 2007 Petr Machata <pmachata@redhat.com> - 4.1.5-8
 - tidy up the specfile per rpmlint comments
