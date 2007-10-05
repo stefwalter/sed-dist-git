@@ -16,7 +16,7 @@ Patch0: sed-4.1.5-utf8performance.patch
 Patch1: sed-4.1.5-follow.patch
 Patch2: sed-4.1.5-copy.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: glibc-devel gawk
+BuildRequires: glibc-devel
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
