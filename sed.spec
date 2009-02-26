@@ -6,7 +6,7 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.1.5
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: GPLv2+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
@@ -70,6 +70,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.1.5-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Thu Nov 13 2008 Jiri Moskovcak <jmoskovc@redhat.com> 4.1.5-11
 - improved follow.patch (thanks to Arkadiusz Miskiewicz for initial patch)
 - Resolves: #470912
