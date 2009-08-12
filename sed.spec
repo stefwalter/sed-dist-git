@@ -6,11 +6,11 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
-Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.gz
+Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.bz2
 Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.2.1-dummyparam.diff
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -66,6 +66,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Tue Aug 11 2009 Ville Skyttä <ville.skytta@iki.fi> - 4.2.1-3
+- Use bzipped upstream tarball.
+
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.2.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
