@@ -5,17 +5,14 @@
 
 Summary: A GNU stream text editor
 Name: sed
-Version: 4.2.1
-Release: 10%{?dist}
+Version: 4.2.2
+Release: 1%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.bz2
 Source1: http://sed.sourceforge.net/sedfaq.txt
-Patch0: sed-4.2.1-copy.patch
-Patch1: sed-4.2.1-makecheck.patch
-Patch2: sed-4.2.1-data-loss.patch
-Patch3: sed-4.2.1-fix-0x26-on-RHS.patch
+Patch0: sed-4.2.2-copy.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: glibc-devel, libselinux-devel
 Requires(post): /sbin/install-info
@@ -33,10 +30,7 @@ specified in a script file or from the command line.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%patch0 -p1 -b .copy
 
 %build
 %configure --without-included-regex
@@ -77,6 +71,13 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Fri Jan 04 2013 Martin Briza <mbriza@redhat.com> - 4.2.2-1
+- New release
+- Dropping included patches: sed-4.2.1-data-loss.patch sed-4.2.1-fix-0x26-on-RHS.patch sed-4.2.1-makecheck.patch
+- Dropping unused patch sed-4.2.1-dummyparam.diff
+- Regenerated sed-4.2.{1,2}-copy.patch
+- Minor change to patching (creating backup files)
+
 * Tue Jul 10 2012 Martin Briza <mbriza@redhat.com> - 4.2.1-10
 - Fixed the readded -c option
   Resolves: #832855
