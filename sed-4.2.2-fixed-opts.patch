@@ -1,0 +1,41 @@
+diff -upr sed-4.2.2/sed/sed.c sed-4.2.2_new/sed/sed.c
+--- sed-4.2.2/sed/sed.c	2013-05-03 13:15:23.841235793 +0200
++++ sed-4.2.2_new/sed/sed.c	2013-05-03 13:15:23.842235796 +0200
+@@ -163,14 +163,21 @@ main(argc, argv)
+   int argc;
+   char **argv;
+ {
+-#ifdef REG_PERL
+-#define SHORTOPTS "bcsnrzRuEe:f:l:i::V:"
++#if defined(REG_PERL) && \
++    (defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(MSDOS) || defined(__EMX__))
++#define SHORTOPTS "bsnrzRuEe:f:l:i::V:"
++#elif defined(REG_PERL)
++#define SHORTOPTS "snrzRuEe:f:l:i::V:"
++#elif defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(MSDOS) || defined(__EMX__)
++#define SHORTOPTS "bsnrzuEe:f:l:i::V:"
+ #else
+-#define SHORTOPTS "bcsnrzuEe:f:l:i::V:"
++#define SHORTOPTS "snrzuEe:f:l:i::V:"
+ #endif
+ 
+   static struct option longopts[] = {
++#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(MSDOS) || defined(__EMX__)
+     {"binary", 0, NULL, 'b'},
++#endif
+     {"regexp-extended", 0, NULL, 'r'},
+ #ifdef REG_PERL
+     {"regexp-perl", 0, NULL, 'R'},
+@@ -283,10 +290,12 @@ main(argc, argv)
+ 	  posixicity = POSIXLY_BASIC;
+ 	  break;
+ 
++#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(MSDOS) || defined(__EMX__)
+         case 'b':
+ 	  read_mode = "rb";
+ 	  write_mode = "wb";
+ 	  break;
++#endif
+ 
+ 	/* Undocumented, for compatibility with BSD sed.  */
+ 	case 'E':

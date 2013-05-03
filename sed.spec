@@ -6,13 +6,14 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.bz2
 Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.2.2-copy.patch
+Patch1: sed-4.2.2-fixed-opts.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: glibc-devel, libselinux-devel
 Requires(post): /sbin/install-info
@@ -31,6 +32,7 @@ specified in a script file or from the command line.
 %prep
 %setup -q
 %patch0 -p1 -b .copy
+%patch1 -p1 -b .fixed-opts
 
 %build
 %configure --without-included-regex
@@ -71,6 +73,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Fri May 03 2013 Fridolin Pokorny <fpokorny@redhat.com> - 4.2.2-3
+- Fixed option handling rhbz#948598
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.2.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
