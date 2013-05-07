@@ -6,7 +6,7 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
@@ -15,7 +15,7 @@ Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.2.2-copy.patch
 Patch1: sed-4.2.2-fixed-opts.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: glibc-devel, libselinux-devel
+BuildRequires: glibc-devel, libselinux-devel, libacl-devel
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
@@ -73,6 +73,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Tue May 07 2013 Fridolin Pokorny <fpokorny@redhat.com> - 4.2.2-4
+- Added libacl-devel to BuildRequires for ACL support rhbz#959432
+
 * Fri May 03 2013 Fridolin Pokorny <fpokorny@redhat.com> - 4.2.2-3
 - Fixed option handling rhbz#948598
 
