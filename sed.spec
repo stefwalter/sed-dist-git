@@ -6,14 +6,13 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
 Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.bz2
 Source1: http://sed.sourceforge.net/sedfaq.txt
-Patch0: sed-4.2.2-copy.patch
-Patch1: sed-4.2.2-fixed-opts.patch
+Patch0: sed-4.2.2-binary_copy_args.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: glibc-devel, libselinux-devel, libacl-devel
 Requires(post): /sbin/install-info
@@ -32,7 +31,6 @@ specified in a script file or from the command line.
 %prep
 %setup -q
 %patch0 -p1 -b .copy
-%patch1 -p1 -b .fixed-opts
 
 %build
 %configure --without-included-regex
@@ -73,6 +71,12 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Mon Feb 10 2014 Jan Pacner <jpacner@redhat.com> - 4.2.2-6
+- Resolves: #1061367 (Dropping -b option breaks cross-platform compat.)
+- Related: #948598 (Man page scan results for sed)
+- introduce -c argument, add help for -b --binary arguments,
+  cleanup arguments & help)
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.2.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
