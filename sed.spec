@@ -167,7 +167,7 @@ rm -rf ${RPM_BUILD_ROOT}
 * Mon Sep  4 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-5
 - Fix handling of relative symlinks (#205122)
 
-* Wed Aug  3 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-4
+* Thu Aug  3 2006 Petr Machata <pmachata@redhat.com> - 4.1.5-4
 - remove superfluous multibyte processing in str_append for UTF-8
   encoding (thanks Paolo Bonzini, #177246)
 
