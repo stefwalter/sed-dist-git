@@ -6,7 +6,7 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
@@ -65,12 +65,17 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc BUGS NEWS THANKS README AUTHORS sedfaq.txt.gz COPYING COPYING.DOC
+%{!?_licensedir:%global license %%doc}
+%license COPYING COPYING.DOC
+%doc BUGS NEWS THANKS README AUTHORS sedfaq.txt.gz
 %{_bindir}/sed
 %{_infodir}/*.info*
 %{_mandir}/man*/*
 
 %changelog
+* Mon Aug  4 2014 Tom Callaway <spot@fedoraproject.org> - 4.2.2-8
+- fix license handling
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.2.2-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
