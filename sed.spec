@@ -15,6 +15,7 @@ Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.2.2-binary_copy_args.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: glibc-devel, libselinux-devel, libacl-devel
+BuildRequires: perl-Getopt-Long
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
@@ -75,6 +76,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %changelog
 * Sat Dec 26 2015 Petr Stodulka <pstodulk@redhat.com> - 4.2.2-12
 - use global instead of define in spec file
+- added new build dependency on perl-Getopt-Long
 
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.2.2-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
