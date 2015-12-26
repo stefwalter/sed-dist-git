@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 %ifos linux
-%define _bindir /bin
+%global _bindir /bin
 %endif
 
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.2
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
@@ -73,6 +73,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Sat Dec 26 2015 Petr Stodulka <pstodulk@redhat.com> - 4.2.2-12
+- use global instead of define in spec file
+
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.2.2-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
