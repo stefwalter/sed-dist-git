@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-%ifos linux
-%global _bindir /bin
-%endif
 
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.2
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
@@ -74,6 +71,11 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Tue Feb 09 2016 Petr Stodulka <pstodulk@redhat.com> - 4.2.2-14
+- remove meaningless redefinition of _bindir - it's standard macro now;
+  sed will be store in /usr/bin/sed
+  Resovles: #1305835
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 4.2.2-13
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
