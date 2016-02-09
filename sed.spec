@@ -3,7 +3,7 @@
 Summary: A GNU stream text editor
 Name: sed
 Version: 4.2.2
-Release: 14%{?dist}
+Release: 15%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
@@ -15,6 +15,8 @@ BuildRequires: glibc-devel, libselinux-devel, libacl-devel
 BuildRequires: perl-Getopt-Long
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
+
+Provides: /bin/sed
 
 #copylib
 Provides: bundled(gnulib)
@@ -71,6 +73,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Tue Feb 09 2016 Petr Stodulka <pstodulk@redhat.com> - 4.2.2-15
+- provides /bin/sed
+
 * Tue Feb 09 2016 Petr Stodulka <pstodulk@redhat.com> - 4.2.2-14
 - remove meaningless redefinition of _bindir - it's standard macro now;
   sed will be store in /usr/bin/sed
