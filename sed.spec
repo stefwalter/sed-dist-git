@@ -2,12 +2,12 @@
 
 Summary: A GNU stream text editor
 Name: sed
-Version: 4.2.2
-Release: 15%{?dist}
+Version: 4.3
+Release: 1%{?dist}
 License: GPLv3+
 Group: Applications/Text
 URL: http://sed.sourceforge.net/
-Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.bz2
+Source0: ftp://ftp.gnu.org/pub/gnu/sed/sed-%{version}.tar.xz
 Source1: http://sed.sourceforge.net/sedfaq.txt
 Patch0: sed-4.2.2-binary_copy_args.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -73,6 +73,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_mandir}/man*/*
 
 %changelog
+* Wed Jan 04 2017  Jakub Martisko <jamartis@redhat.com> - 4.3-1
+- new version 4.3
+- Resolves: #1410093
+
 * Tue Feb 09 2016 Petr Stodulka <pstodulk@redhat.com> - 4.2.2-15
 - provides /bin/sed
 
@@ -135,7 +139,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 * Wed Jun 13 2012 Martin Briza <mbriza@redhat.com> - 4.2.1-9
 - Backported commit from upstream to fix treating "x26" as "&" character
-- Added virtual provide for gnulib according to http://fedoraproject.org/wiki/Packaging:No_Bundled_Libraries 
+- Added virtual provide for gnulib according to http://fedoraproject.org/wiki/Packaging:No_Bundled_Libraries
   Resolves: #812067 #821776
 
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.2.1-8
@@ -326,7 +330,7 @@ rm -rf ${RPM_BUILD_ROOT}
 * Tue Jan 18 2000 Jakub Jelinek <jakub@redhat.com>
 - rebuild with glibc 2.1.3 to fix an mmap64 bug in sys/mman.h
 
-* Sun Mar 21 1999 Cristian Gafton <gafton@redhat.com> 
+* Sun Mar 21 1999 Cristian Gafton <gafton@redhat.com>
 - auto rebuild in the new build environment (release 4)
 
 * Tue Aug 18 1998 Jeff Johnson <jbj@redhat.com>
