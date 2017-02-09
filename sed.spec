@@ -2,7 +2,7 @@
 
 Summary: A GNU stream text editor
 Name: sed
-Version: 4.3
+Version: 4.4
 Release: 1%{?dist}
 License: GPLv3+
 Group: Applications/Text
@@ -66,13 +66,18 @@ rm -rf ${RPM_BUILD_ROOT}
 %files -f %{name}.lang
 %defattr(-,root,root)
 %{!?_licensedir:%global license %%doc}
-%license COPYING COPYING.DOC
+%license COPYING 
 %doc BUGS NEWS THANKS README AUTHORS sedfaq.txt.gz
 %{_bindir}/sed
 %{_infodir}/*.info*
 %{_mandir}/man*/*
 
 %changelog
+* Thu Feb 09 2017  Jakub Martisko <jamartis@redhat.com> - 4.4-1
+- new version 4.4
+- removed COPYING.DOC license which is no longer in upstream
+- Resolves: #1410093
+
 * Wed Jan 04 2017  Jakub Martisko <jamartis@redhat.com> - 4.3-1
 - new version 4.3
 - Resolves: #1410093
