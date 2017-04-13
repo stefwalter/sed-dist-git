@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  remote_user: root
+  tasks:
+  - name: Install the requirements
+    package: name={{item}} state=latest
+    with_items:
+    - beakerlib
+    - sed
+
+  - name: Beakerlib compatibility fixes
+    shell: mkdir -p /usr/lib/beakerlib && ln -sf /usr/share/beakerlib/beakerlib.sh /usr/lib/beakerlib/beakerlib.sh
+
+  - name: Stub out RHTS environment
+    shell: touch /usr/bin/rhts-environment.sh
+
+  - name: Execute test-selftest
+    shell: BEAKERLIB_DIR=$PWD ./test-selftest 2>&1 | tee -a output
+
+  - name: Execute test-selftest
+    shell: BEAKERLIB_DIR=$PWD OUTPUTFILE=output ./test-uppercase-operand 2>&1 | tee -a output
