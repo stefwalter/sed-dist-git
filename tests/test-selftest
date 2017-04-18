@@ -27,8 +27,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Include rhts environment
-. /usr/bin/rhts-environment.sh
-. /usr/lib/beakerlib/beakerlib.sh
+BEAKERLIB=/usr/local/lib/beakerlib
+. /usr/local/lib/beakerlib/beakerlib.sh
 
 PACKAGE="sed"
 PACKAGES="sed gcc rpm-build automake libselinux-devel glibc-devel"

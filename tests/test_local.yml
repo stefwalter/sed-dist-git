@@ -1,0 +1,42 @@
+---
+- hosts: localhost
+  remote_user: root
+  vars:
+    artifacts: ./artifacts
+  tasks:
+  - name: Put beakerlib library on the target
+    copy:
+      src: /usr/share/beakerlib
+      dest: /usr/local/lib
+
+  - name: Put beakerlib binaries on the target
+    copy:
+      src: "{{item}}"
+      dest: /usr/local/bin
+      mode: 755
+    with_fileglob:
+      - "/usr/bin/beakerlib-*"
+
+  - name: Stub out RHTS environment
+    file:
+      path: /usr/local/bin/rhts-environment.sh
+      state: touch
+
+  - block:
+    - name: Copy tests to target
+      copy:
+        src: ./
+        dest: /usr/local/bin/
+
+    - name: Execute test-selftest
+      shell: /bin/sh -e /usr/local/bin/test-selftest 1>>test.log 2>&1
+
+    - name: Execute test-uppercase-operand
+      shell: OUTPUTFILE=/dev/stdout /bin/sh -e /usr/local/bin/test-uppercase-operand 1>>test.log 2>&1
+
+    always:
+    - name: Pull out the logs
+      fetch:
+        dest: "{{artifacts}}/"
+        src: test.log
+        flat: yes

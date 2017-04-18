@@ -29,8 +29,9 @@ if rpm -q $PACKAGE &>/dev/null; then
 	PKG_RELEASE=$( rpm -q ${PACKAGE} --queryformat %{release} )
 fi
 
-# Include rhts environment
-. /usr/bin/rhts-environment.sh
+function report_result {
+	true
+}
 
 function Log {
 	echo -e ":: [`date +%H:%M:%S`] :: $1" >> $OUTPUTFILE
@@ -83,3 +84,4 @@ report_result $TEST $RESULT
 
 HeaderLog "End of $PACKAGE RHTS Test"
 
+test $RESULT == "PASS" || exit 1

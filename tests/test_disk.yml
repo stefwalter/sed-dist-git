@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  vars:
+    artifacts: ./artifacts
+  vars_prompt:
+  - name: subjects
+    prompt: "Folder containing QCow2/raw test subject"
+    private: no
+  tasks:
+  - name: Install the test requirements
+    package: name={{item}} state=latest
+    with_items:
+    - beakerlib
+    - genisoimage
+    - qemu-system-x86
+
+  - name: Run local playbook in a launched disk
+    shell: TEST_ARTIFACTS={{artifacts}} ./ansible-qemu-playbook {{subjects}} --extra-vars="artifacts={{artifacts}}" test_local.yml

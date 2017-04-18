@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# Launches the QCOW2 image and writes out an inventory file for use
+# with ansible to access the contents of the running system.
+
+set -euf
+
+TEST_ARTIFACTS=${TEST_ARTIFACTS:-./artifacts}
+OUT=$TEST_ARTIFACTS
+mkdir -p $OUT
+
+touch $OUT/meta-data
+printf "#cloud-config\nuser: root\npassword: foobar\nssh_pwauth: True\nchpasswd:\n expire: False\n" > $OUT/user-data
+
+genisoimage -input-charset utf-8 -output $OUT/cloud-init.iso \
+	-volid cidata -joliet -rock -quiet $OUT/user-data $OUT/meta-data
+
+# Launch the disk
+rm -f $OUT/qemu.pid
+qemu-system-x86_64 -m 1024 "$1" -enable-kvm -snapshot -cdrom $OUT/cloud-init.iso \
+	-net nic,model=virtio -net user,hostfwd=tcp:127.0.0.3:2222-:22 \
+	-device isa-serial,chardev=pts2 -chardev file,id=pts2,path=$OUT/machine.log \
+	-daemonize -display none -pidfile $OUT/qemu.pid
+trap "kill $(cat $OUT/qemu.pid); rm -f $OUT/qemu.pid" EXIT
+
+shift
+
+# Override the concept of localhost for all subprocesses
+export ANSIBLE_INVENTORY=$OUT/inventory
+cat > $OUT/inventory <<EOF
+localhost ansible_ssh_port=2222 ansible_ssh_host=127.0.0.3 ansible_ssh_user=root ansible_ssh_pass=foobar ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+EOF
+
+# Wait for ssh to come up
+for x in $(seq 1 30); do
+	if ansible -i $OUT/inventory localhost -m ping > /dev/null 2> /dev/null; then
+		break
+	fi
+	sleep 3
+done
+
+# Now execute the playbook
+ansible-playbook -i $OUT/inventory "$@"
