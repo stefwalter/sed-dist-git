@@ -1,20 +1,13 @@
 ---
 - hosts: localhost
-  remote_user: root
   vars:
     artifacts: ./artifacts
+    tests: ./test_local.yml
   vars_prompt:
   - name: subjects
     prompt: "RPM test subject(s)"
     private: no
-  tasks:
-  - name: Install the requirements
-    package: name={{item}} state=latest
-    with_items:
-    - beakerlib
 
-  - name: Install the test subject RPMs
-    package: name={{item}} state=latest
-    with_items: "{{ subjects }}"
+  roles:
+  - rpm
 
-- include: test_local.yml
