@@ -1,0 +1,44 @@
+---
+- name: Install the beakerlib requirements
+  package: name={{item}} state=latest
+  with_items:
+  - beakerlib
+  tags:
+  - prepare
+
+- name: Put beakerlib binaries on the target
+  copy:
+    src: "{{item}}"
+    dest: /usr/local/bin/
+    mode: 755
+  with_fileglob:
+    - "/usr/bin/beakerlib-*"
+    - "/usr/share/beakerlib/*"
+    - "rpm.py"
+
+- name: Copy tests to target
+  copy:
+    src: "{{ playbook_dir }}/"
+    dest: /usr/local/bin/
+
+- name: Fix up beakerlib
+  shell: "find /usr/local/bin -type f | xargs sed -i 's|/usr/share/beakerlib|/usr/local/bin|g'"
+
+- name: Make artifacts directory
+  file: path={{ artifacts }} state=directory owner=root mode=755 recurse=yes
+
+- block:
+  - name: Execute beakerlib test
+    shell: /bin/sh -c "exec 2>>{{artifacts}}/test.log 1>>{{artifacts}}/test.log; cd /usr/local/bin; /bin/sh -e ./{{ item }}"
+    with_items:
+    - "{{ tests }}"
+
+  - name: Check the results
+    shell: "if grep ' FAIL ' /tmp/test.log; then exit 1; else exit 0; fi"
+
+- always:
+  - name: Pull out the logs
+    fetch:
+      dest: "{{artifacts}}/"
+      src: "{{artifacts}}/"
+      flat: yes
