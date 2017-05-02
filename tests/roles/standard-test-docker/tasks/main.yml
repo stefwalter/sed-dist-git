@@ -1,0 +1,16 @@
+---
+- name: Install the docker requirements
+  package: name="{{item}}" state=latest
+  with_items:
+    - docker
+
+- name: Make artifacts directory
+  file: path={{ artifacts }} state=directory owner=root mode=755 recurse=yes
+
+- name: Start the docker service
+  service:
+    name: docker
+    state: running
+
+- name: Run the local playbook in the container
+  shell: '"{{role_path}}/files/run-docker.sh" -i "{{subjects}}" -a "{{artifacts}}" -l "{{log}}" -p "{{playbooks}}"'

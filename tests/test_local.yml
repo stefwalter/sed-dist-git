@@ -2,4 +2,6 @@
 # This first play always runs on the local staging system
 - hosts: localhost
   roles:
-  - { role: beakerlib, tests: [ test-uppercase-operand ] }
+  - role: beakerlib
+    tests:
+    - test-uppercase-operand

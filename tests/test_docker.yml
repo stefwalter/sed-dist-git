@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  vars:
+    artifacts: ./artifacts
+    playbooks: ./test_local.yml
+  vars_prompt:
+  - name: subjects
+    prompt: "Name of Docker image test subject"
+    private: no
+
+  roles:
+  - standard-test-docker
