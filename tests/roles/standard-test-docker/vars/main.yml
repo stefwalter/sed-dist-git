@@ -2,3 +2,4 @@
 artifacts: ./artifacts
 log: "{{artifacts}}/docker.log"
 subjects: []
+docker_ssh_port: 2222

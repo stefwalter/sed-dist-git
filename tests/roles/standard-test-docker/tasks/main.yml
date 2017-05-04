@@ -12,5 +12,36 @@
     name: docker
     state: running
 
-- name: Run the local playbook in the container
-  shell: '"{{role_path}}/files/run-docker.sh" -i "{{subjects}}" -a "{{artifacts}}" -l "{{log}}" -p "{{playbooks}}"'
+- name: Start ansible-ready docker container running SSHD
+  shell: docker run -d -p "{{docker_ssh_port}}:22" -v "{{artifacts}}:/artifacts:z,rw" -v "{{role_path}}/files/docker-run-ssh:/run.sh" "{{subjects}}" /bin/sh -ex /run.sh
+  register: docker_run_output
+
+- name: Capture docker container ID
+  set_fact: container_id="{{docker_run_output.stdout}}"
+
+- name: Wait for container to initialize
+  wait_for: port="{{docker_ssh_port}}" search_regex=OpenSSH
+
+- name: How to do this properly?
+  debug: msg="Need to run playbook {{playbooks}} in container {{container_id}} with SSH on port {{docker_ssh_port}} using inventory file {{role_path}}/files/docker-inventory"
+
+# ********************************
+# HELP!
+# There must be a better way to run the actual test playbook without running
+# another instance of ansible-playbook an external shell command.
+# The external run means we can't track the return status of the invidual
+# tasks in the test playbook--which is the whole point.
+# ********************************
+- name: Run the playbook in the container
+  shell: ansible-playbook "{{playbooks}}" -i "{{role_path}}/files/docker-inventory" -e "artifacts=/artifacts"
+  register: playbook_output
+
+- debug: var=playbook_output
+
+- pause: prompt="Continue when ready"
+
+- name: Grab the container logs
+  shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log"
+
+- name: Clean up the docker container
+  shell: docker rm -f "{{ container_id }}"
