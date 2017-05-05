@@ -23,24 +23,31 @@
   wait_for: port="{{docker_ssh_port}}" search_regex=OpenSSH
 
 - name: How to do this properly?
-  debug: msg="Need to run playbook {{playbooks}} in container {{container_id}} with SSH on port {{docker_ssh_port}} using inventory file {{role_path}}/files/docker-inventory"
+  debug: msg="Need to run playbook {{playbooks}} in container {{container_id}} with SSH on port {{docker_ssh_port}}"
 
 # ********************************
 # HELP!
 # There must be a better way to run the actual test playbook without running
-# another instance of ansible-playbook an external shell command.
+# another instance of ansible-playbook in an external shell command.
 # The external run means we can't track the return status of the invidual
 # tasks in the test playbook--which is the whole point.
 # ********************************
 - name: Run the playbook in the container
-  shell: ansible-playbook "{{playbooks}}" -i "{{role_path}}/files/docker-inventory" -e "artifacts=/artifacts"
+  shell: >
+    ansible-playbook "{{playbooks}}"
+    -e "artifacts=/artifacts"
+    -e "ansible_ssh_host=127.0.0.3"
+    -e "ansible_ssh_port={{docker_ssh_port}}"
+    -e "ansible_ssh_user=root"
+    -e "ansible_ssh_pass=foobar"
+    -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'"
   register: playbook_output
 
 - debug: var=playbook_output
 
 - pause: prompt="Continue when ready"
 
-- name: Grab the container logs
+- name: Save the container log as an artifact
   shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log"
 
 - name: Clean up the docker container
