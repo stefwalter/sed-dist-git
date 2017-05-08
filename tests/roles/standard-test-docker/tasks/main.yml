@@ -13,7 +13,13 @@
     state: running
 
 - name: Start ansible-ready docker container running SSHD
-  shell: docker run -d -p "{{docker_ssh_port}}:22" -v "{{artifacts}}:/artifacts:z,rw" -v "{{role_path}}/files/docker-run-ssh:/run.sh" "{{subjects}}" /bin/sh -ex /run.sh
+  shell: >
+    docker run -d
+    -p "{{docker_ssh_port}}:22"
+    -v "{{artifacts}}:/artifacts:z,rw"
+    -v "{{role_path}}/files/docker-run-ssh:/run.sh"
+    "{{subjects}}"
+    /bin/sh -ex /run.sh
   register: docker_run_output
 
 - name: Capture docker container ID
@@ -35,17 +41,21 @@
 - name: Run the playbook in the container
   shell: >
     ansible-playbook "{{playbooks}}"
+    -i "{{role_path}}/files/docker-inventory"
     -e "artifacts=/artifacts"
-    -e "ansible_ssh_host=127.0.0.3"
-    -e "ansible_ssh_port={{docker_ssh_port}}"
-    -e "ansible_ssh_user=root"
-    -e "ansible_ssh_pass=foobar"
-    -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'"
   register: playbook_output
 
 - debug: var=playbook_output
 
-- pause: prompt="Continue when ready"
+- name: Pause if diagnosing container
+  pause:
+    prompt: |-
+     To diagnose the container, you can use one of the following commands:
+         ssh -p {{docker_ssh_port}} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.3 # password: foobar
+         docker exec -it {{ container_id }} /bin/bash
+     Continue when ready
+  #when: "{{ lookup('env','FEDORA_TEST_DIAGNOSE') }}"
+
 
 - name: Save the container log as an artifact
   shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log"
