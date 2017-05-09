@@ -25,11 +25,12 @@
 - name: Capture docker container ID
   set_fact: container_id="{{docker_run_output.stdout}}"
 
-- name: Wait for container to initialize
-  wait_for: port="{{docker_ssh_port}}" search_regex=OpenSSH
+- block:
+  - name: Wait for container to initialize
+    wait_for: port="{{docker_ssh_port}}" search_regex=OpenSSH
 
-- name: How to do this properly?
-  debug: msg="Need to run playbook {{playbooks}} in container {{container_id}} with SSH on port {{docker_ssh_port}}"
+  - name: How to do this properly?
+    debug: msg="Need to run playbook {{playbooks}} in container {{container_id}} with SSH on port {{docker_ssh_port}}"
 
 # ********************************
 # HELP!
@@ -38,28 +39,29 @@
 # The external run means we can't track the return status of the invidual
 # tasks in the test playbook--which is the whole point.
 # ********************************
-- name: Run the playbook in the container
-  shell: >
-    ANSIBLE_LOG_PATH="{{artifacts}}/container-playbook.log"
-    ansible-playbook "{{playbooks}}"
-    -i "{{role_path}}/files/docker-inventory"
-    -e "artifacts=/artifacts"
-  register: playbook_output
+  - name: Run the playbook in the container
+    shell: >
+      ANSIBLE_LOG_PATH="{{artifacts}}/container-playbook.log"
+      ansible-playbook "{{playbooks}}"
+      -i "{{role_path}}/files/docker-inventory"
+      -e "artifacts=/artifacts"
+    register: playbook_output
 
-- debug: var=playbook_output
+  - debug: var=playbook_output
 
-- name: Pause if diagnosing container
-  pause:
-    prompt: |-
-     To diagnose the container, you can use one of the following commands:
-         ssh -p {{docker_ssh_port}} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.3 # password: foobar
-         docker exec -it {{ container_id }} /bin/bash
-     Continue when ready
-  #when: "{{ lookup('env','FEDORA_TEST_DIAGNOSE') }}"
+  always:
+  - name: Pause if diagnosing container
+    pause:
+      prompt: |-
+       To diagnose the container, you can use one of the following commands:
+           ssh -p {{docker_ssh_port}} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.3 # password: foobar
+           docker exec -it {{ container_id }} /bin/bash
+       Continue when ready
+    #when: "{{ lookup('env','FEDORA_TEST_DIAGNOSE') }}"
 
 
-- name: Save the container log as an artifact
-  shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log" 2>&1
+  - name: Save the container log as an artifact
+    shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log" 2>&1
 
-- name: Clean up the docker container
-  shell: docker rm -f "{{ container_id }}"
+  - name: Clean up the docker container
+    shell: docker rm -f "{{ container_id }}"
