@@ -58,7 +58,7 @@
 
 
 - name: Save the container log as an artifact
-  shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log"
+  shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log" 2>&1
 
 - name: Clean up the docker container
   shell: docker rm -f "{{ container_id }}"
