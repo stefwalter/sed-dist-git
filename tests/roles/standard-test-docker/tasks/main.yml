@@ -40,6 +40,7 @@
 # ********************************
 - name: Run the playbook in the container
   shell: >
+    ANSIBLE_LOG_PATH="{{artifacts}}/container-playbook.log"
     ansible-playbook "{{playbooks}}"
     -i "{{role_path}}/files/docker-inventory"
     -e "artifacts=/artifacts"
