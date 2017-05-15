@@ -12,14 +12,25 @@
     name: docker
     state: running
 
+- name: Configure python version-dependent argument defaults
+  set_fact:
+    docker_ansible_python_arg: null
+    docker_run_python_arg: null
+
+- name: Configure python version-dependent argument settings
+  set_fact:
+    docker_ansible_python_arg: "-e 'ansible_python_interpreter=/usr/bin/python{{docker_python_version}}'"
+    docker_run_python_arg: "--py{{docker_python_version}}"
+  when: docker_python_version is defined and docker_python_version != 2
+
 - name: Start ansible-ready docker container running SSHD
   shell: >
     docker run -d
     -p "{{docker_ssh_port}}:22"
     -v "{{artifacts}}:/artifacts:z,rw"
-    -v "{{role_path}}/files/docker-run-ssh:/run.sh"
+    -v "{{role_path}}/files/docker-run-ssh:/run.sh:z"
     "{{subjects}}"
-    /bin/sh -ex /run.sh
+    /bin/sh -ex /run.sh {{docker_run_python_arg}}
   register: docker_run_output
 
 - name: Capture docker container ID
@@ -45,6 +56,7 @@
       ansible-playbook "{{playbooks}}"
       -i "{{role_path}}/files/docker-inventory"
       -e "artifacts=/artifacts"
+      {{docker_ansible_python_arg}}
     register: playbook_output
 
   - debug: var=playbook_output
