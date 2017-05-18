@@ -2,6 +2,6 @@
 # This first play always runs on the local staging system
 - hosts: localhost
   roles:
-  - role: beakerlib
+  - role: standard-test-beakerlib
     tests:
     - test-uppercase-operand
