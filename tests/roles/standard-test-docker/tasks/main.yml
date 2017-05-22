@@ -12,25 +12,30 @@
     name: docker
     state: running
 
-- name: Configure python version-dependent argument defaults
+- name: Initialize docker and ansible playbook extra args variables
   set_fact:
-    docker_ansible_python_arg: null
-    docker_run_python_arg: null
+    my_docker_extra_args: null
+    my_playbook_extra_args: null
 
 - name: Configure python version-dependent argument settings
   set_fact:
-    docker_ansible_python_arg: "-e 'ansible_python_interpreter=/usr/bin/python{{docker_python_version}}'"
-    docker_run_python_arg: "--py{{docker_python_version}}"
+    my_playbook_extra_args: "{{my_playbook_extra_args}} -e ansible_python_interpreter='/usr/bin/python{{docker_python_version}}'"
+    my_docker_extra_args: "{{my_docker_extra_args}} --py{{docker_python_version}}"
   when: docker_python_version is defined and docker_python_version != 2
+
+- name: Special case - pass along 'rpms' variable to playbook
+  set_fact:
+    my_playbook_extra_args: "{{my_playbook_extra_args}} -e rpms='{{rpms}}'"
+  when: rpms|default("") != ""
 
 - name: Start ansible-ready docker container running SSHD
   shell: >
     docker run -d
-    -p "{{docker_ssh_port}}:22"
-    -v "{{artifacts}}:/artifacts:z,rw"
-    -v "{{role_path}}/files/docker-run-ssh:/run.sh:z"
-    "{{subjects}}"
-    /bin/sh -ex /run.sh {{docker_run_python_arg}}
+    -p '{{docker_ssh_port}}:22'
+    -v '{{artifacts}}:/artifacts:z,rw'
+    -v '{{role_path}}/files/docker-run-ssh:/run.sh:z'
+    '{{subjects}}'
+    /bin/sh -ex /run.sh {{my_docker_extra_args}}
   register: docker_run_output
 
 - name: Capture docker container ID
@@ -52,11 +57,11 @@
 # ********************************
   - name: Run the playbook in the container
     shell: >
-      ANSIBLE_LOG_PATH="{{artifacts}}/container-playbook.log"
-      ansible-playbook "{{playbooks}}"
-      -i "{{role_path}}/files/docker-inventory"
-      -e "artifacts=/artifacts"
-      {{docker_ansible_python_arg}}
+      ANSIBLE_LOG_PATH='{{artifacts}}/container-playbook.log'
+      ansible-playbook '{{playbooks}}'
+      -i '{{role_path}}/files/docker-inventory'
+      -e artifacts='/artifacts'
+      {{my_playbook_extra_args}}
     register: playbook_output
 
   - debug: var=playbook_output
