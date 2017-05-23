@@ -46,9 +46,6 @@
   - name: Wait for container to initialize
     wait_for: port="{{docker_ssh_port}}" search_regex=OpenSSH
 
-  - name: How to do this properly?
-    debug: msg="Need to run playbook {{playbooks}} in container {{container_id}} with SSH on port {{docker_ssh_port}}"
-
 # ********************************
 # HELP!
 # There must be a better way to run the actual test playbook without running
@@ -75,7 +72,7 @@
            ssh -p {{docker_ssh_port}} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.3 # password: foobar
            docker exec -it {{ container_id }} /bin/bash
        Continue when ready
-    #when: lookup('env','FEDORA_TEST_DIAGNOSE')|bool
+    when: lookup('env','FEDORA_TEST_DIAGNOSE')|bool
 
   - name: Save the container log as an artifact
     shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log" 2>&1
