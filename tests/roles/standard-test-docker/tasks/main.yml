@@ -25,7 +25,8 @@
 
 - name: Special case - pass along 'rpms' variable to playbook
   set_fact:
-    my_playbook_extra_args: "{{my_playbook_extra_args}} -e rpms='{{rpms}}'"
+    # note the quoting here: ansible needs to see the single quotes
+    my_playbook_extra_args: "{{my_playbook_extra_args}} -e \"rpms='{{rpms}}'\""
   when: rpms|default("") != ""
 
 - name: Start ansible-ready docker container running SSHD
@@ -74,8 +75,7 @@
            ssh -p {{docker_ssh_port}} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.3 # password: foobar
            docker exec -it {{ container_id }} /bin/bash
        Continue when ready
-    #when: "{{ lookup('env','FEDORA_TEST_DIAGNOSE') }}"
-
+    #when: lookup('env','FEDORA_TEST_DIAGNOSE')|bool
 
   - name: Save the container log as an artifact
     shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log" 2>&1
