@@ -5,8 +5,8 @@
     playbooks: ./test_local.yml
   vars_prompt:
   - name: subjects
-    prompt: "Folder containing QCow2/raw test subject"
+    prompt: "Name of Docker image test subject"
     private: no
 
   roles:
-  - standard-test-cloud
+  - standard-test-docker

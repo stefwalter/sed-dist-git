@@ -1,0 +1,16 @@
+#!/bin/sh
+python_version=2
+while [ $# -gt 0 ]; do
+    case "$1" in
+    --py3) python_version=3 ;;
+    esac
+    shift
+done
+dnf install -y openssh-server python${python_version}-dnf
+ssh-keygen -q -t rsa -N '' -f /etc/ssh/ssh_host_rsa_key
+echo 'root:foobar' | chpasswd
+# start sshd in background
+/usr/sbin/sshd
+echo SSHD READY
+# wait forever
+tail -f /dev/null

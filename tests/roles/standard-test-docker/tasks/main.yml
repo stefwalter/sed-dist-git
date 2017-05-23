@@ -1,0 +1,81 @@
+---
+- name: Install the docker requirements
+  package: name="{{item}}" state=latest
+  with_items:
+    - docker
+
+- name: Make artifacts directory
+  file: path={{ artifacts }} state=directory owner=root mode=755 recurse=yes
+
+- name: Start the docker service
+  service:
+    name: docker
+    state: running
+
+- name: Initialize docker and ansible playbook extra args variables
+  set_fact:
+    my_docker_extra_args: null
+    my_playbook_extra_args: null
+
+- name: Configure python version-dependent argument settings
+  set_fact:
+    my_playbook_extra_args: "{{my_playbook_extra_args}} -e ansible_python_interpreter='/usr/bin/python{{docker_python_version}}'"
+    my_docker_extra_args: "{{my_docker_extra_args}} --py{{docker_python_version}}"
+  when: docker_python_version is defined and docker_python_version != 2
+
+- name: Special case - pass along 'rpms' variable to playbook
+  set_fact:
+    # note the quoting here: ansible needs to see the single quotes
+    my_playbook_extra_args: "{{my_playbook_extra_args}} -e \"rpms='{{rpms}}'\""
+  when: rpms|default("") != ""
+
+- name: Start ansible-ready docker container running SSHD
+  shell: >
+    docker run -d
+    -p '{{docker_ssh_port}}:22'
+    -v '{{artifacts}}:/artifacts:z,rw'
+    -v '{{role_path}}/files/docker-run-ssh:/run.sh:z'
+    '{{subjects}}'
+    /bin/sh -ex /run.sh {{my_docker_extra_args}}
+  register: docker_run_output
+
+- name: Capture docker container ID
+  set_fact: container_id="{{docker_run_output.stdout}}"
+
+- block:
+  - name: Wait for container to initialize
+    wait_for: port="{{docker_ssh_port}}" search_regex=OpenSSH
+
+# ********************************
+# HELP!
+# There must be a better way to run the actual test playbook without running
+# another instance of ansible-playbook in an external shell command.
+# The external run means we can't track the return status of the invidual
+# tasks in the test playbook--which is the whole point.
+# ********************************
+  - name: Run the playbook in the container
+    shell: >
+      ANSIBLE_LOG_PATH='{{artifacts}}/container-playbook.log'
+      ansible-playbook '{{playbooks}}'
+      -i '{{role_path}}/files/docker-inventory'
+      -e artifacts='/artifacts'
+      {{my_playbook_extra_args}}
+    register: playbook_output
+
+  - debug: var=playbook_output
+
+  always:
+  - name: Pause if diagnosing container
+    pause:
+      prompt: |-
+       To diagnose the container, you can use one of the following commands:
+           ssh -p {{docker_ssh_port}} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.3 # password: foobar
+           docker exec -it {{ container_id }} /bin/bash
+       Continue when ready
+    when: lookup('env','FEDORA_TEST_DIAGNOSE')|bool
+
+  - name: Save the container log as an artifact
+    shell: docker logs "{{ container_id }}" >"{{artifacts}}/docker.log" 2>&1
+
+  - name: Clean up the docker container
+    shell: docker rm -f "{{ container_id }}"
