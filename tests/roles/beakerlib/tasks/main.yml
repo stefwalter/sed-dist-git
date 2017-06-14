@@ -1,12 +1,44 @@
 ---
+- name: Add restraint repo for restraint-rhts on Fedora hosts
+  blockinfile:
+    create: yes
+    dest: /etc/yum.repos.d/restraint.repo
+    block: |
+     [Restraint]
+     name=Copr repo for restraint owned by bpeck
+     baseurl=http://copr-be.cloud.fedoraproject.org/results/bpeck/restraint/fedora-{{ ansible_distribution_major_version }}-{{ ansible_userspace_architecture}}/
+     skip_if_unavailable=True
+     gpgcheck=0
+     enabled=1
+  when: ansible_distribution == 'Fedora'
+  tags:
+  - prepare
+
+- name: Add restraint repo for restraint-rhts on RHEL/CentOS x86_64 Hosts
+  blockinfile:
+    create: yes
+    dest: /etc/yum.repos.d/restraint.repo
+    block: |
+     [Restraint]
+     name=Copr repo for restraint owned by bpeck
+     baseurl=http://copr-be.cloud.fedoraproject.org/results/bpeck/restraint/epel-7-x86_64/
+     skip_if_unavailable=True
+     gpgcheck=0
+     enabled=1
+  when: (ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS') and ansible_userspace_architecture == 'x86_64'
+  tags:
+  - prepare
+
+
 - name: Install the beakerlib requirements
   package: name={{item}} state=latest
   with_items:
   - beakerlib
+  - restraint-rhts
   tags:
   - prepare
 
-- name: Put beakerlib binaries on the target
+- name: Put beakerlib and rhts binaries on the target
   copy:
     src: "{{item}}"
     dest: /usr/local/bin/
@@ -14,6 +46,8 @@
   with_fileglob:
     - "/usr/bin/beakerlib-*"
     - "/usr/share/beakerlib/*"
+    - "/usr/bin/rhts-*"
+    - "/usr/share/rhts/*"
     - "rpm.py"
 
 - name: Copy tests to target
@@ -24,8 +58,16 @@
 - name: Fix up beakerlib
   shell: "find /usr/local/bin -type f | xargs sed -i 's|/usr/share/beakerlib|/usr/local/bin|g'"
 
-- name: Make artifacts directory
-  file: path={{ artifacts }} state=directory owner=root mode=755 recurse=yes
+- name: Make artifacts and mnt/testarea directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    mode: 755
+    recurse: yes
+  with_items:
+  - "{{ artifacts }}"
+  - /mnt/testarea
 
 - block:
   - name: Execute beakerlib test
@@ -37,8 +79,8 @@
     shell: "if grep ' FAIL ' /tmp/test.log; then exit 1; else exit 0; fi"
 
 - always:
-  - name: Pull out the logs
-    fetch:
-      dest: "{{artifacts}}/"
-      src: "{{artifacts}}/"
-      flat: yes
+   - name: Pull out the logs
+     synchronize:
+       dest: "{{artifacts}}/"
+       src: "{{artifacts}}/"
+       mode: pull
