@@ -1,34 +1,19 @@
 ---
 - name: Add restraint repo for restraint-rhts on Fedora hosts
-  blockinfile:
-    create: yes
+  get_url:
+    url: https://copr.fedorainfracloud.org/coprs/bpeck/restraint/repo/fedora-{{ansible_distribution_major_version}}/bpeck-restraint-fedora-{{ansible_distribution_major_version}}.repo
     dest: /etc/yum.repos.d/restraint.repo
-    block: |
-     [Restraint]
-     name=Copr repo for restraint owned by bpeck
-     baseurl=http://copr-be.cloud.fedoraproject.org/results/bpeck/restraint/fedora-{{ ansible_distribution_major_version }}-{{ ansible_userspace_architecture}}/
-     skip_if_unavailable=True
-     gpgcheck=0
-     enabled=1
   when: ansible_distribution == 'Fedora'
   tags:
   - prepare
 
 - name: Add restraint repo for restraint-rhts on RHEL/CentOS x86_64 Hosts
-  blockinfile:
-    create: yes
+  get_url:
+    url: https://copr.fedorainfracloud.org/coprs/bpeck/restraint/repo/epel-7/bpeck-restraint-epel-7.repo
     dest: /etc/yum.repos.d/restraint.repo
-    block: |
-     [Restraint]
-     name=Copr repo for restraint owned by bpeck
-     baseurl=http://copr-be.cloud.fedoraproject.org/results/bpeck/restraint/epel-7-x86_64/
-     skip_if_unavailable=True
-     gpgcheck=0
-     enabled=1
-  when: (ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS') and ansible_userspace_architecture == 'x86_64'
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
   tags:
   - prepare
-
 
 - name: Install the beakerlib requirements
   package: name={{item}} state=latest
